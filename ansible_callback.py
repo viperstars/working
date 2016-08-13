@@ -3,15 +3,17 @@
 
 import MySQLdb
 import datetime
+import json
 
 TIME_FORMAT='%Y-%m-%d %H:%M:%S'
 now = datetime.datetime.now()
 
 def insert(hosts,res):
+    res = json.dumps(res)
     conn=MySQLdb.connect(user='root', passwd='123456', host='192.168.1.116', port=3306, db='ansible')
     cur=conn.cursor()
-    sql='insert into status(hosts,result,date) values("%s","%s","%s")' %(hosts, res, now.strftime(TIME_FORMAT))
-    cur.execute(sql)
+    sql='insert into status(hosts,result,date) values(%s, %s, %s)'
+    cur.execute(sql, (hosts, res, now.strftime(TIME_FORMAT)))
     conn.commit()
     conn.close()
 
